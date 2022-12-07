@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@{
+}
+@model List<Seleccion>
+
+
+<h2>Partido con mas Goles</h2>
+ 
+<table>
+    <thead> 
+        <tr>
+            <th>
+                Seleccion
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 1)
+        {
+            foreach (Seleccion s in Model)
+            {
+                <tr>
+                    <td>@s.unPais.Nombre</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>@Model[0].unPais.Nombre</td>
+            </tr>
+        }
+    </tbody>
+</table>

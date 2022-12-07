@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio;
+@using Microsoft.AspNetCore.Http
+@model List<Resenia>
+@{
+    @if (Model.Count == 0)
+    {
+        <div class="alert-danger">
+            <p>No existen reseñas asociadas</p>
+        </div>
+    }
+    else
+    {
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    @if (Context.Session.GetString("UsuarioRol") == "Operador")
+                    {
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                    }
+                    <th>Titulo</th>
+                    <th>Contenido</th>
+                    <th>Seleccion 1</th>
+                    <th>Seleccion 2</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 0;
+                    foreach (Resenia r in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            @if (Context.Session.GetString("UsuarioRol") == "Operador")
+                            {
+                                <td>@r.unPartido.Fecha</td>
+                                <td>
+                                    @r.unPartido.Tipo
+                                    @if (r.unPartido is PartidoGrupo)
+                                    {
+                                        <p>Grupo: @r.unPartido.ConsultarNombre()</p>
+                                    }
+                                </td>
+                            }
+
+                            <td>@r.Titulo</td>
+                            <td>@r.Contenido</td>
+
+                            @foreach (Seleccion s in r.unPartido.selecciones)
+                            {
+                                <td>@s.unPais.Nombre</td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+}

@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@using Microsoft.AspNetCore.Http
+@{
+    Sistema sistema = Sistema.Instancia;
+}
+@model List<Partido>
+
+
+<h3>Listado de partidos cerrados</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Fechas</th>
+            <th>Nombre seleccion 1</th>
+            <th>Nombre seleccion 2</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int i = 0;
+
+            foreach (Partido p in Model)
+            {
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>@p.Fecha</td>
+
+                    @foreach (Seleccion s in p.selecciones)
+                    {
+                        <td>@s.unPais.Nombre</td>
+                    }S
+                </tr>
+            }
+        }
+    </tbody>
+</table>

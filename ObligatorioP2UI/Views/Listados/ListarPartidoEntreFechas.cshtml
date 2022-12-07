@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@{
+}
+
+<h1>Listar partidos entre fechas seleccionadas</h1>
+
+<form action="/PartidosEntreFechas/ListarPartidoEntreFechasListado" method="post">
+    <ul>
+        <li>
+            <label for="Fecha1">Ingrese la fecha de incio</label>
+            <input type="date" id="Fecha1" name="Fecha1">
+        </li>
+
+        <li>
+            <label for="Fecha2">Ingrese la fecha final</label>
+            <input type="date" id="Fecha2" name="Fecha2">
+        </li>
+
+        <li class="button">
+            <button type="submit">Listar</button>
+        </li>
+
+    </ul>
+</form>

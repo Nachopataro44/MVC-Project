@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@using Microsoft.AspNetCore.Http
+@{
+}
+@model List<UsuarioPeriodista>
+
+<h3>Listado de Periodistas</h3>
+
+@if (Model.Count == 0)
+{
+
+
+    <div class="alert-danger">
+        <p>no se han encontrado periodistas</p>
+    </div>
+}
+else
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>id</th>
+                <th>Nombre</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int i = 0;
+                foreach (UsuarioPeriodista u in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@u.Id</td>
+                        <td>@u.Nombre @u.Apellido</td>
+                        <td>@u.Email</td>
+                        <td>@Html.ActionLink("Ver reseñas de este periodistas", "ListarResenias", "Listados", new { Periodista = u.Email })</td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+}

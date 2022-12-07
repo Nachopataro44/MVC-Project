@@ -1,0 +1,169 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@using Microsoft.AspNetCore.Http
+@{
+    Sistema sistema = Sistema.Instancia;
+}
+@model List<Partido>
+
+<h3>Listado de partidos cerrados</h3>
+
+@if (Model.Count == 0)
+{
+
+
+    <div class="alert-danger">
+        <p>No hay partidos cerrados</p>
+    </div>
+}
+else
+{
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Fechas</th>
+                <th>Nombre seleccion 1</th>
+                <th>Nombre seleccion 2</th>
+                @if (Context.Session.GetString("UsuarioRol") == "Operador")
+                {
+                    <th>Estado</th>
+                    <th>Resultado</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int i = 0;
+
+                foreach (Partido p in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@p.Fecha</td>
+                        @{
+                            @foreach (Seleccion s in p.selecciones)
+                            {
+                                List<Incidencia> listadoGoles = sistema.ObtenerGolesDeSeleccion(s.unPais.CodigoA3, p.Id);
+                                List<Incidencia> listadoAmarillas = sistema.ObtenerAmarillasDeSeleccion(s.unPais.CodigoA3, p.Id);
+                                List<Incidencia> listadoRojas = sistema.ObtenerAmarillasDeSeleccion(s.unPais.CodigoA3, p.Id);
+
+                                int cantidadGoles = listadoGoles.Count;
+                                int cantidadAmarillas = listadoAmarillas.Count;
+                                int cantidadRojas = listadoRojas.Count;
+
+                                bool huboPenales = false;
+                                bool huboAlargue = false;
+
+                    <td>
+                        <h6> @s.unPais.Nombre </h6>
+                        @if (Context.Session.GetString("UsuarioRol") == "Operador")
+                        {
+
+                            @if (p.Estado == "Finalizado")
+                            {
+                                <p>Esta seleccion realizo @cantidadGoles goles en los minutos</p>
+                                @foreach (Incidencia gol in listadoGoles)
+                                {
+                                    <ul>
+                                        <li>
+                                            @gol.Minuto
+                                            @if (!s.Equals(p.selecciones[0]))
+                                            {
+                                                @gol.unJugador.NombreCompleto
+                                            }
+                                            @if (gol.Minuto < 0)
+                                            {
+                                                huboPenales = true;
+                                                huboAlargue = true;
+                                            }
+                                            @if (gol.Minuto > 90)
+                                            {
+                                                huboAlargue = true;
+                                            }
+                                        </li>
+                                    </ul>
+                                }
+                                <p>@cantidadAmarillas Amarillas en los minutos</p>
+                                @foreach (Incidencia amarillas in listadoAmarillas)
+                                {
+                                    <ul>
+                                        <li>
+                                            @amarillas.Minuto
+                                            @if (!s.Equals(p.selecciones[0]))
+                                            {
+                                                @amarillas.unJugador.NombreCompleto
+                                            }
+                                        </li>
+                                    </ul>
+                                }
+                                <p>@cantidadRojas Rojas en los minutos</p>
+
+                                @foreach (Incidencia roja in listadoAmarillas)
+                                {
+                                    <ul>
+                                        <li>
+                                            @roja.Minuto
+                                            @if (!s.Equals(p.selecciones[0]))
+                                            {
+                                                @roja.unJugador.NombreCompleto
+                                            }
+                                        </li>
+                                    </ul>
+                                }
+                                @if (p is PartidoGrupo)
+                                {
+                                    <p>@p.Tipo</p>
+                                    <p>@p.Resultado</p>
+                                    <p>Grupo: @p.ConsultarNombre()</p>
+                                    @if (huboPenales)
+                                    {
+                                        <p>En este partido hubo penales</p>
+                                        <p>En este partido hubo alarge</p>
+                                    }if (!huboPenales && huboAlargue)
+                                    {
+                                        <p>En este partido hubo alarge</p>
+                                    }
+                                    if (!huboAlargue)
+                                    {
+                                        <p>Este partido finalizo dentro del tiempo reglamentario</p>
+                                    }
+                                }
+                            }
+                        }
+
+                    </td>
+
+                            }
+
+                            @if (Context.Session.GetString("UsuarioRol") == "Periodista")
+                            {
+                                if (!sistema.ExisteResenia(Context.Session.GetString("UsuarioLogueado"), p.Id))
+                                {
+                                    <td>@Html.ActionLink("Realizar reseña", "ReseniaView", "Resenia", new { partidoId = p.Id })</td>
+
+                                }
+                            }
+                            else if (Context.Session.GetString("UsuarioRol") == "Operador")
+                            {
+                                <td>@p.Estado</td>
+                                <td>@p.Resultado</td>
+                                if (p.Estado != "Finalizado")
+                                {
+                                    <td>@Html.ActionLink("Finalizar partido", "FinalizarPartido", "FinalizarPartido", new { partidoId = p.Id })</td>
+                                }
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+}

@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<form action="/Resenia/ReseniaView" method="post">
+
+    <input type="hidden" value=@ViewBag.partidoId name="partidoId" />
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="usuario">Titulo de reseña: </label>
+        <input type="text" id="Titulo" class="form-control" name="Titulo" />
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example2">Reseña</label>
+        <textarea cols="20" id="resenia" name="Contenido" rows="2"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block mb-4">Enviar resenia</button>
+
+    @if (ViewBag.NombreError != null)
+    {
+            @ViewBag.NombreError
+    }
+
+</form>

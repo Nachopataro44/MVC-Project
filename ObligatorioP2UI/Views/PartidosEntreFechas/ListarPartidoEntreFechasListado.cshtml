@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Dominio
+@{
+    Sistema sistema = Sistema.Instancia;
+}
+@model List<Partido>
+
+<h3>Listar partidos entre fechas seleccionadas</h3>
+
+@if (Model.Count == 0)
+{
+
+
+    <div class="alert-danger">
+        No existen partidos entre estas fechas
+    </div>
+}
+else
+{
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Seleccion 1</th>
+                <th>Goles Seleccion 1</th>
+                <th>Amarillas Seleccion 1</th>
+                <th>Rojas Seleccion 1</th>
+                <th>Seleccion 2</th>
+                <th>Goles Seleccion 2</th>
+                <th>Amarillas Seleccion 2</th>
+                <th>Rojas Seleccion 2</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int i = 0;
+                @foreach (Partido p in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        @foreach (Seleccion s in p.selecciones)
+                        {
+                            <td>@s.unPais.Nombre</td>
+                            <td>@sistema.ObtenerGolesDeSeleccion(s.unPais.CodigoA3, p.Id).Count</td>
+                            <td>@sistema.ObtenerAmarillasDeSeleccion(s.unPais.CodigoA3, p.Id).Count</td>
+                            <td>@sistema.ObtenerExpulcionesDeSeleccion(s.unPais.CodigoA3, p.Id).Count</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
